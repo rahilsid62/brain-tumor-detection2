@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Brain Tumor Detection (EFFICIENTNET + RESNET50)</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(120deg, #e0eafc 0%, #cfdef3 100%); }
+        .container { max-width: 520px; margin: 40px auto; background: #fff; padding: 32px 36px; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+        h2 { text-align: center; color: #2a4d69; margin-bottom: 24px; }
+        label { font-weight: 500; }
+        input[type="file"] { margin-top: 8px; }
+        button { background: #2a4d69; color: #fff; border: none; padding: 10px 24px; border-radius: 6px; font-size: 16px; cursor: pointer; transition: background 0.2s; }
+        button:hover { background: #1e3552; }
+        .result { margin-top: 28px; padding: 16px; background: #e9ffe9; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,128,0,0.07); }
+        .probs { margin-top: 16px; }
+        .probs-bar { display: flex; align-items: center; margin-bottom: 10px; }
+        .probs-label { width: 120px; font-weight: 500; color: #2a4d69; }
+        .probs-progress { flex: 1; height: 18px; background: #f0f0f0; border-radius: 9px; margin: 0 10px; overflow: hidden; }
+        .probs-fill { height: 100%; background: #4fc3f7; border-radius: 9px; transition: width 0.4s; }
+        .probs-value { min-width: 48px; text-align: right; font-size: 15px; color: #333; }
+        .img-preview { margin-top: 18px; text-align: center; }
+        .img-preview img { max-width: 220px; max-height: 220px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    </style>
+    <script>
+        function previewImage(event) {
+            var reader = new FileReader();
+            reader.onload = function(){
+                var output = document.getElementById('preview');
+                output.src = reader.result;
+                output.style.display = 'block';
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+    <h2>Brain Tumor Detection<br><span style="font-size:18px;color:#4fc3f7;">EFFICIENTNET + RESNET50</span></h2>
+        <form method="post" enctype="multipart/form-data">
+            <label for="file">Upload MRI Image:</label><br>
+            <input type="file" name="file" id="file" required onchange="previewImage(event)"><br>
+            <div class="img-preview">
+                <img id="preview" src="#" alt="Image Preview" style="display:none;" />
+            </div>
+            <br>
+            <button type="submit" name="action" value="predict" style="margin-top:10px;">Predict</button>
+        </form>
+        
+        {% if result %}
+        <div class="result">
+            <strong>{{ result }}</strong>
+            {% if confidence %}<div style="margin-top:6px;">Confidence: {{ confidence }}%</div>{% endif %}
+            {% if latency %}<div style="margin-top:2px;font-size:12px;color:#555;">Latency: {{ latency }}</div>{% endif %}
+            {% if probs %}
+            <div class="probs">
+                <h4>Class Probabilities:</h4>
+                                {% for k, v in probs.items() %}
+                                <div class="probs-bar">
+                                        <span class="probs-label">{{ k }}</span>
+                                        <div class="probs-progress">
+                                                <div class="probs-fill" data-width="{{ (v*100)|round(1) }}"></div>
+                                        </div>
+                                        <span class="probs-value">{{ '%.4f'|format(v) }}</span>
+                                </div>
+                                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+        <script>
+            // Apply widths after load to avoid linter false positives on Jinja in style attributes
+            document.querySelectorAll('.probs-fill').forEach(function(el){
+                var w = el.getAttribute('data-width');
+                if(w){ el.style.width = w + '%'; }
+            });
+        </script>
+</body>
+</html>

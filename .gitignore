@@ -1,0 +1,74 @@
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+.python-version
+
+# Jupyter (none currently, safe to keep)
+.ipynb_checkpoints/
+
+# Editor / OS noise
+.vscode/
+.idea/
+*.code-workspace
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs / temp / cache
+*.log
+*.tmp
+*.temp
+*.pid
+.cache/
+*.cache/
+
+# Secrets
+*.env.*
+secrets.*
+
+# Misc swap
+*.swp
+*.swo
+~$*
+
+dataset/
+
+# Baseline model checkpoints (keep Hybrid tracked)
+models/efficientnet_full.pth
+models/efficientnet_head.pth
+models/efficientnet_partial.pth
+models/resnet50_full.pth
+models/resnet50_head.pth
+models/resnet50_partial.pth
+models/resnet50_full_infer.pth
+models/resnet50_head_infer.pth
+models/resnet50_partial_infer.pth
+
+# Generated evaluation artifacts
+results/calibration/*.json
+results/calibration/*.png
+results/pr/*.png
+results/roc/*.png
+
+# Generated training/eval outputs
+training_logs/
+training_logs/**/*.npz
+training_logs/**/cm*.png
+training_logs/cm*.png
+training_logs/**/*_learning_curves.png
+training_logs/**/*_metrics.csv
+training_logs/**/*_main.log
+
+# Runtime uploads
+uploads/*
+!uploads/.gitkeep
+
+models/
