@@ -15,7 +15,7 @@ Modern MRI brain tumor classification with:
 ## 📂 Key Files
 | File / Folder | Purpose |
 | ------------- | ------- |
-| `main.py` | Flask inference app (hybrid EfficientNet-B0 + ResNet50 model) |
+| `app.py` | Flask inference app (hybrid EfficientNet-B0 + ResNet50 model) |
 | `training_scripts/cbam_efficient.netb0.py` | EfficientNet‑B0 + CBAM training pipeline |
 | `training_scripts/cbam_resnet50.py` | ResNet50 + CBAM + multi‑scale head training pipeline |
 | `training_scripts/train_hybrid_integrated.py` | Integrated hybrid training pipeline (EfficientNet‑B0 + ResNet50) |
@@ -38,7 +38,7 @@ pip install torch==2.4.0+cu121 torchvision==0.19.0+cu121 -f https://download.pyt
 
 ## 🕸️ Run Inference Web App
 ```bash
-python main.py
+python app.py
 ```
 Open: http://localhost:5000
 
@@ -109,7 +109,7 @@ Outputs:
 
 
 ## 🌡️ Temperature Calibration (Optional)
-The function `calibrate_temperature()` in `main.py` performs a grid search minimizing NLL over a labeled validation set (default folder `archive/Testing/<class>/image.jpg`). Example (Python shell):
+The function `calibrate_temperature()` in `app.py` performs a grid search minimizing NLL over a labeled validation set (default folder `archive/Testing/<class>/image.jpg`). Example (Python shell):
 ```python
 from main import calibrate_temperature
 print(calibrate_temperature('archive/Testing'))  # returns dict with best_temperature
@@ -126,7 +126,7 @@ models/efficientnet_full.pth
 Weights (hard-coded) = [0.1, 0.3, 0.6]; logits combined then softmax(T). If any file is missing a warning is printed and that component contributes zeros.
 
 ## ➕ Extending / Adding Models
-Place additional `.pth` files in `models/` and adapt the `WEIGHT_FILES` list & weights vector in `main.py` accordingly. Keep temperature calibration updated after changes.
+Place additional `.pth` files in `models/` and adapt the `WEIGHT_FILES` list & weights vector in `app.py` accordingly. Keep temperature calibration updated after changes.
 
 ## 🛠️ Regenerating Requirements
 All current runtime/training dependencies are pinned in `requirements.txt`. Remove entries you do not need for lightweight inference (e.g. seaborn, matplotlib) if shipping to production.
@@ -139,4 +139,4 @@ This repository is for research & educational purposes only. It is NOT a medical
 Issues / PRs improving robustness (data augmentation, calibration, evaluation) or documentation are welcome.
 
 ---
-If you need a lean inference-only bundle: keep `main.py`, `templates/`, `models/`, `requirements.txt` (trim heavy libs), and deploy behind a production WSGI server (e.g. gunicorn / waitress) with proper security & logging.
+If you need a lean inference-only bundle: keep `app.py`, `templates/`, `models/`, `requirements.txt` (trim heavy libs), and deploy behind a production WSGI server (e.g. gunicorn / waitress) with proper security & logging.
